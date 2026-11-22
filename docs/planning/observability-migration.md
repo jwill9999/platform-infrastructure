@@ -105,16 +105,26 @@ design detects those conditions.
 - Resource monitoring should still alert on abnormal container count and memory,
   but detection is not a substitute for lifecycle prevention.
 
-### 2. Repository and access baseline — in progress
+### 2. Repository and access baseline — completed 22 November 2026
 
 - Repository governance, owner roles, secret destinations, branching, review,
   incident response, and evidence boundaries are defined in
   [the security and credential runbook](../security-and-credentials.md).
-- `main` is protected by an active no-bypass ruleset requiring pull requests and
-  blocking deletion and non-fast-forward updates. Automated repository validation
-  for secrets, credential-like filenames, and oversized artefacts is being added.
-  Completion requires successful hosted checks, required-status-check enforcement,
-  a harmless blocked-merge probe, cleanup, and post-merge readback.
+- `main` is protected by an active no-bypass ruleset requiring pull requests,
+  blocking deletion and non-fast-forward updates, and requiring the exact
+  GitHub Actions contexts `Secret scan` and `Repository structure` with strict
+  branch updating.
+- PR #14 published the baseline after native scans, structural validation, and an
+  independent security critique. Both hosted checks passed on revision
+  `1b373b1e1beb08ab3c3278b08039c9717cfd83a9`.
+- Temporary PR #15 added one harmless generated file one byte above the 1 MiB
+  policy ceiling. `Secret scan` passed, `Repository structure` failed, and GitHub
+  reported the PR as `BLOCKED`. The PR was closed, its remote branch deleted, and
+  its temporary checkout removed without merging the probe.
+- PR #14 merged as `27c1f19e8e8ac9be7b4cdf00f99f0ff9edd07e66`.
+  Post-merge native scans and structural validation passed, the ruleset readback
+  retained both required contexts with no bypass actors, and the exact merge
+  revision's push workflow passed.
 - Read-only Grafana Cloud organisation and stack discovery remains part of phase 4;
   no Grafana Cloud access or configuration was qualified by this repository phase.
 
