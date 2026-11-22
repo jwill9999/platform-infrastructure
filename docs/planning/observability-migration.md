@@ -128,7 +128,13 @@ design detects those conditions.
 - Read-only Grafana Cloud organisation and stack discovery remains part of phase 4;
   no Grafana Cloud access or configuration was qualified by this repository phase.
 
-### 3. Inventory and export
+### 3. Inventory and export — completed 22 November 2026
+
+The reviewed [existing observability inventory](../observability-inventory.md) and
+secret-free recovery snapshot record the effective topology, producers, consumers,
+cardinality, alerting, retention, resources, build sources, and unverified
+boundaries. Issue #17 owns the confirmed over-broad credential distribution and is
+a prerequisite for cloud foundation work.
 
 - Inventory versions, Docker Compose ownership, volumes, restart policies, network
   boundaries, dashboards, data sources, alerts, notification policies, Prometheus
