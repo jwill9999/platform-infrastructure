@@ -1,7 +1,7 @@
 # Observability migration plan
 
-Status: draft for owner decision and independent critique. No Grafana Cloud,
-Hostinger, provider, or VPS configuration change is authorised by this document.
+Status: reviewed migration plan. No Grafana Cloud, Hostinger, provider, or VPS
+configuration change is authorised by this document.
 
 ## Objective
 
@@ -105,14 +105,18 @@ design detects those conditions.
 - Resource monitoring should still alert on abnormal container count and memory,
   but detection is not a substitute for lifecycle prevention.
 
-### 2. Repository and access baseline
+### 2. Repository and access baseline — in progress
 
-- Agree repository governance, owner roles, secret storage, branching, review, and
-  evidence policy.
-- Verify read-only access to the existing Grafana Cloud organisation and identify
-  the intended stack without changing it.
-- Establish a controlled method for the owner to create or store credentials
-  without placing values in chat.
+- Repository governance, owner roles, secret destinations, branching, review,
+  incident response, and evidence boundaries are defined in
+  [the security and credential runbook](../security-and-credentials.md).
+- `main` is protected by an active no-bypass ruleset requiring pull requests and
+  blocking deletion and non-fast-forward updates. Automated repository validation
+  for secrets, credential-like filenames, and oversized artefacts is being added.
+  Completion requires successful hosted checks, required-status-check enforcement,
+  a harmless blocked-merge probe, cleanup, and post-merge readback.
+- Read-only Grafana Cloud organisation and stack discovery remains part of phase 4;
+  no Grafana Cloud access or configuration was qualified by this repository phase.
 
 ### 3. Inventory and export
 

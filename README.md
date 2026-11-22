@@ -1,7 +1,8 @@
 # Platform infrastructure
 
-Private configuration, planning, and operational runbooks for shared development
-infrastructure owned by `jwill9999`.
+Configuration, planning, and operational runbooks for shared development
+infrastructure owned by `jwill9999`. The repository is currently public, so every
+tracked file must be safe for unrestricted disclosure.
 
 Initial scope:
 
@@ -16,4 +17,7 @@ own reviewed architecture, configuration, and runbooks. Secrets, raw telemetry,
 private logs, VM disks, build artefacts, and credential-bearing exports must not be
 committed.
 
-See [the observability migration plan](docs/planning/observability-migration.md).
+See:
+
+- [Observability migration plan](docs/planning/observability-migration.md)
+- [Security and credential handling](docs/security-and-credentials.md)
