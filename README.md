@@ -21,4 +21,5 @@ See:
 
 - [Observability migration plan](docs/planning/observability-migration.md)
 - [Existing observability inventory](docs/observability-inventory.md)
+- [Observability credential containment plan](docs/planning/observability-credential-containment.md)
 - [Security and credential handling](docs/security-and-credentials.md)
