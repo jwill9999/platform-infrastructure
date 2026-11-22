@@ -1,0 +1,247 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: openrouter-credits
+    folder: Alerts
+    interval: 5m
+    rules:
+      - uid: openrouter-credits-low-1
+        title: OpenRouter remaining credits low
+        condition: B
+        for: 5m
+        noDataState: NoData
+        execErrState: Alerting
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: openrouter_credits_total_dollars - openrouter_credits_used_dollars
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator:
+                    type: lt
+                    params: [2]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    type: last
+                    params: []
+        labels:
+          severity: warning
+        annotations:
+          summary: OpenRouter remaining credits are below $2
+          description: "Remaining credits: ${A} (threshold: $2). Top up at https://openrouter.ai/settings/credits"
+        notification_settings:
+          receiver: slack-alerts
+
+  - orgId: 1
+    name: claude-code-quota
+    folder: Alerts
+    interval: 5m
+    rules:
+      - uid: claude-5h-quota-high-1
+        title: Claude Code 5-Hour Quota Used above 90 percent
+        condition: B
+        for: 5m
+        noDataState: NoData
+        execErrState: Alerting
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: max by (window) (claude_subscription_used_percent{window="5h"})
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [90]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    type: last
+                    params: []
+        labels:
+          severity: warning
+        annotations:
+          summary: Claude Code 5-hour quota usage is above 90 percent
+          description: "5-hour window usage: ${A} percent"
+        notification_settings:
+          receiver: slack-alerts
+
+      - uid: claude-7d-quota-high-1
+        title: Claude Code Weekly Quota Used above 90 percent
+        condition: B
+        for: 5m
+        noDataState: NoData
+        execErrState: Alerting
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: max by (window) (claude_subscription_used_percent{window="7d"})
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [90]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    type: last
+                    params: []
+        labels:
+          severity: warning
+        annotations:
+          summary: Claude Code weekly quota usage is above 90 percent
+          description: "7-day window usage: ${A} percent"
+        notification_settings:
+          receiver: slack-alerts
+
+  - orgId: 1
+    name: codex-quota
+    folder: Alerts
+    interval: 5m
+    rules:
+      - uid: codex-5h-quota-high-1
+        title: Codex 5-Hour Quota Used above 90 percent
+        condition: B
+        for: 5m
+        noDataState: NoData
+        execErrState: Alerting
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: max by (window) (codex_subscription_used_percent{window="5h"})
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [90]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    type: last
+                    params: []
+        labels:
+          severity: warning
+        annotations:
+          summary: Codex 5-hour quota usage is above 90 percent
+          description: "5-hour window usage: ${A} percent"
+        notification_settings:
+          receiver: slack-alerts
+
+      - uid: codex-7d-quota-high-1
+        title: Codex Weekly Quota Used above 90 percent
+        condition: B
+        for: 5m
+        noDataState: NoData
+        execErrState: Alerting
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: max by (window) (codex_subscription_used_percent{window="7d"})
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [90]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    type: last
+                    params: []
+        labels:
+          severity: warning
+        annotations:
+          summary: Codex weekly quota usage is above 90 percent
+          description: "7-day window usage: ${A} percent"
+        notification_settings:
+          receiver: slack-alerts

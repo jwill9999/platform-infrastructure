@@ -1,0 +1,92 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: obs-prometheus
+    restart: unless-stopped
+    mem_limit: 512m
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=90d
+      - --web.enable-otlp-receiver
+      - --query.lookback-delta=35d
+      - --enable-feature=otlp-deltatocumulative
+    ports:
+      - "${TAILSCALE_IP}:9090:9090"
+    networks:
+      - obs
+
+  aperture-exporter:
+    build:
+      context: ./aperture
+      dockerfile: Dockerfile
+    container_name: obs-aperture-exporter
+    restart: unless-stopped
+    mem_limit: 256m
+    env_file: .env
+    volumes:
+      - aperture-exporter-state:/state
+    networks:
+      - obs
+
+  openrouter-activity-exporter:
+    build:
+      context: ./openrouter
+      dockerfile: Dockerfile
+    container_name: obs-openrouter-activity-exporter
+    restart: unless-stopped
+    mem_limit: 128m
+    env_file: .env
+    networks:
+      - obs
+
+  loki:
+    image: grafana/loki:latest
+    container_name: obs-loki
+    restart: unless-stopped
+    mem_limit: 512m
+    env_file: .env
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - loki-data:/loki
+    command:
+      - -config.file=/etc/loki/loki-config.yaml
+      - -config.expand-env=true
+    ports:
+      - "${TAILSCALE_IP}:3100:3100"
+    networks:
+      - obs
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: obs-grafana
+    restart: unless-stopped
+    mem_limit: 512m
+    env_file: .env
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/datasources/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ./grafana/dashboards/dashboard-provider.yml:/etc/grafana/provisioning/dashboards/dashboard-provider.yml:ro
+      - ./grafana/dashboards/files:/etc/grafana/provisioning/dashboards/files:ro
+      - ./grafana/alerting:/etc/grafana/provisioning/alerting:ro
+    ports:
+      - "${TAILSCALE_IP}:3000:3000"
+    networks:
+      - obs
+    depends_on:
+      - prometheus
+      - loki
+
+volumes:
+  prometheus-data:
+  loki-data:
+  grafana-data:
+  aperture-exporter-state:
+
+networks:
+  obs:

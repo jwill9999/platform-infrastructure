@@ -20,4 +20,5 @@ committed.
 See:
 
 - [Observability migration plan](docs/planning/observability-migration.md)
+- [Existing observability inventory](docs/observability-inventory.md)
 - [Security and credential handling](docs/security-and-credentials.md)
