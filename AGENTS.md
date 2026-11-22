@@ -24,6 +24,10 @@ These rules apply to work in this repository.
   remove the value.
 - Treat command output, screenshots, diagnostics, and generated plans as possible
   secret-bearing material. Redact values rather than copying them into evidence.
+- Follow [the credential runbook](docs/security-and-credentials.md) for storage,
+  owner handoff, rotation, revocation, and suspected exposure. Agents may define
+  secret names and destinations but must never request or receive secret values in
+  chat.
 
 ## Change workflow
 
@@ -35,6 +39,8 @@ These rules apply to work in this repository.
 - Use feature branches and pull requests. Do not push directly to `main`.
 - Obtain meaningful read-only critique of substantial architecture, security,
   lifecycle, and migration changes before implementation or acceptance.
+- Keep third-party GitHub Actions pinned to full commit SHAs. Review their source,
+  permissions, and release provenance before updating a pin.
 
 ## Practical verification
 
