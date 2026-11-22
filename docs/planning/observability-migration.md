@@ -31,8 +31,17 @@ Read-only inspection on 22 November 2026 found:
 - Thirty-nine unintended Docker SonarQube MCP containers had consumed nearly all
   RAM and swap. With owner approval they were stopped and auto-removed. Available
   memory recovered from roughly 156 MiB to 5.7 GiB and swap use fell from roughly
-  4 GiB to 840 MiB. One separate low-memory Podman SonarQube MCP instance was
-  retained because its ownership and necessity were not yet established.
+  4 GiB to 840 MiB.
+- Subsequent read-only qualification tied new containers to the Codex SonarQube MCP
+  integration: SonarQube CLI 1.11.0 returned while its auto-remove stdio container
+  remained alive with no CPU, memory, or PID limit. The owner chose to disable the
+  container-based MCP integration rather than introduce a custom lifecycle wrapper.
+  The Codex MCP configuration entry, one remaining Docker container, and the
+  separate Podman MCP container were removed. The native CLI and secret-scanning
+  hook were retained. Two native scans plus an independent fresh-agent recheck
+  passed without recreating an MCP container; the observability stack remained
+  running. Available memory was about 5.5 GiB and swap use about 607 MiB at final
+  author verification.
 
 The Sonar event is planning evidence for container ownership, missing-telemetry,
 resource saturation, and cleanup alerts. It is not proof that the future monitoring
@@ -86,14 +95,15 @@ design detects those conditions.
 
 ## Migration phases
 
-### 1. Immediate helper-container containment
+### 1. Immediate helper-container containment — completed 22 November 2026
 
-- Identify the SonarQube MCP launcher, session owner, and intended lifetime.
-- Enforce stable per-session ownership, a finite maximum instance count, memory/PID
-  and elapsed-time limits, guaranteed normal/cancel/failure teardown, and stale
-  resource reconciliation before replacement.
-- Preserve the separate Podman instance until its ownership and necessity are
-  proved. Detection and alerting support this lifecycle; they are not prevention.
+- The owner selected removal of the container-based SonarQube MCP integration while
+  retaining the native CLI scanner and repository secret-scanning protocol.
+- Future re-enablement requires a maintained fix or a separately reviewed lifecycle
+  boundary with stable ownership, finite resource/lifetime limits, guaranteed
+  teardown, and stale reconciliation.
+- Resource monitoring should still alert on abnormal container count and memory,
+  but detection is not a substitute for lifecycle prevention.
 
 ### 2. Repository and access baseline
 
